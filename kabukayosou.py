@@ -11,6 +11,7 @@ from prophet import Prophet
 meigara = st.text_input("企業名を記入してください")
 
 try:
+
     # 証券コードが記載されたエクセルを読み込ませる
     url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
     r = requests.get(url)
@@ -91,5 +92,5 @@ try:
     fig = model.plot(forecast_data)
     st.pyplot(fig)
 
-except:
+except KeyError:
     st.write("企業名が見つかりません")
