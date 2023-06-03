@@ -4,25 +4,22 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 import altair as alt
 import requests
-import pandas_datareader.data as web
 import datetime
 from prophet import Prophet
 
 # 3926.T
 meigara = st.text_input("企業名を記入してください")
 
-# 証券コードが記載されたエクセルを読み込ませる
-url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
-r = requests.get(url)
-with open('data_j.xls', 'wb') as output:
-    output.write(r.content)
-dd = pd.read_excel("./data_j.xls" , index_col="銘柄名")
- # 証券コードの行から銘柄名を引っ張り出す
-Tickercode = dd.loc[meigara]["銘柄名"]
+try:
+    # 証券コードが記載されたエクセルを読み込ませる
+    url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
+    r = requests.get(url)
+    with open('data_j.xls', 'wb') as output:
+        output.write(r.content)
+    dd = pd.read_excel("./data_j.xls" , index_col="銘柄名")
+     # 証券コードの行から銘柄名を引っ張り出す
+    ticker_code = dd.loc[meigara]["コード"]
 
-ticker = f"{Tickercode}.T"
-
-if Tickercode:
     ##日数を選択してください
     st.sidebar.write("""
     ## 表示日数
@@ -31,6 +28,8 @@ if Tickercode:
     st.write(f"""
     ### {meigara}の株価({days}日間)
     """)
+
+    ticker = f"{ticker_code}.T"
     
     ##範囲を選択してください
     st.sidebar.write("""
@@ -71,11 +70,11 @@ if Tickercode:
     )
     st.altair_chart(chart, use_container_width=True)
 
-    start = datetime.date(2018, 1, 1)
-    end = datetime.date.today()
+    start = '2018-01-01'
+    end = datetime.datetime.today().strftime('%Y-%m-%d')
 
     # データ取得
-    data1 = web.DataReader(ticker, start, end)
+    data1 = yf.download(ticker, start=start, end=end)
     # 表から日付、終値を設定
     data1['ds'] = data1.index
     data1 = data1.rename({'Adj Close': 'y'}, axis=1)
@@ -91,3 +90,6 @@ if Tickercode:
 
     fig = model.plot(forecast_data)
     st.pyplot(fig)
+
+except:
+    st.write("企業名が見つかりません")
