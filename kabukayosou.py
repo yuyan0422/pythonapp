@@ -9,7 +9,7 @@ import datetime
 from prophet import Prophet
 
 # 3926.T
-meigara = st.text_input("証券コードを入力してください")
+meigara = st.text_input("企業名を記入してください")
 
 ticker = f"{meigara}.T"
 
@@ -18,7 +18,9 @@ url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-a
 r = requests.get(url)
 with open('data_j.xls', 'wb') as output:
     output.write(r.content)
-dd = pd.read_excel("./data_j.xls", index_col="コード")
+dd = pd.read_excel("./data_j.xls" , index_col="銘柄名")
+
+## change from Company name to ticker.
 
 if meigara:
     # 証券コードの行から銘柄名を引っ張り出す
@@ -29,7 +31,7 @@ if meigara:
     """)
     days = st.sidebar.slider("日数", 1, 60, 30)
     st.write(f"""
-    ### {value}の株価({days}日間)
+    ### {meigara}の株価({days}日間)
     """)
     
     ##範囲を選択してください
