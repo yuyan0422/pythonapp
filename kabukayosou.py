@@ -11,20 +11,18 @@ from prophet import Prophet
 # 3926.T
 meigara = st.text_input("企業名を記入してください")
 
-ticker = f"{meigara}.T"
-
 # 証券コードが記載されたエクセルを読み込ませる
 url = "https://www.jpx.co.jp/markets/statistics-equities/misc/tvdivq0000001vg2-att/data_j.xls"
 r = requests.get(url)
 with open('data_j.xls', 'wb') as output:
     output.write(r.content)
 dd = pd.read_excel("./data_j.xls" , index_col="銘柄名")
+ # 証券コードの行から銘柄名を引っ張り出す
+Tickercode = dd.loc[int(meigara)]["銘柄名"]
 
-## change from Company name to ticker.
+ticker = f"{Tickercode}.T"
 
-if meigara:
-    # 証券コードの行から銘柄名を引っ張り出す
-    value = dd.loc[int(meigara)]["銘柄名"]
+if Tickercode:
     ##日数を選択してください
     st.sidebar.write("""
     ## 表示日数
