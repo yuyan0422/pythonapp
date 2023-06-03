@@ -18,7 +18,7 @@ with open('data_j.xls', 'wb') as output:
     output.write(r.content)
 dd = pd.read_excel("./data_j.xls" , index_col="銘柄名")
  # 証券コードの行から銘柄名を引っ張り出す
-Tickercode = dd.loc[int(meigara)]["銘柄名"]
+Tickercode = dd.loc[meigara]["銘柄名"]
 
 ticker = f"{Tickercode}.T"
 
